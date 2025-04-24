@@ -8,6 +8,7 @@
     "build": "vite build",
     "package": "electron-forge package",
     "make": "electron-forge make",
+    "dev:electron": "cross-env NODE_ENV=development electron-forge start",
     "lint": "eslint src"
   },
   "keywords": [
@@ -32,6 +33,7 @@
     "@electron/fuses": "^1.8.0",
     "@vitejs/plugin-react": "^4.4.1",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^7.0.3",
     "electron": "^35.2.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
@@ -43,6 +45,7 @@
     "@radix-ui/react-tabs": "^1.1.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "electron-squirrel-startup": "^1.0.1",
     "lucide-react": "^0.503.0",
     "react": "^19.1.0",

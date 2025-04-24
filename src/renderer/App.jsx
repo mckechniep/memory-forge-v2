@@ -1,8 +1,8 @@
 // src/renderer/App.jsx
 import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '/components/ui/tabs';
-import { FileProcessingForm } from '/components/FileProcessingForm.jsx';
-import { RegexBuilder } from '/components/RegexBuilder.jsx';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FileProcessingForm } from '@/components/FileProcessingForm';
+import { RegexBuilder } from '@/components/RegexBuilder';
 
 const App = () => {
   const [mode, setMode] = useState('rag');
