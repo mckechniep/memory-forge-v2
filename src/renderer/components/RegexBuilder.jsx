@@ -20,6 +20,7 @@ export const RegexBuilder = () => {
   const [subcategories, setSubcategories] = useState([]);
   const [showCategoryDialog, setShowCategoryDialog] = useState(false);
   const [showSubcategoryDialog, setShowSubcategoryDialog] = useState(false);
+  const [manualRegex, setManualRegex] = useState('');
 
   useEffect(() => {
     loadDictionary();
@@ -138,7 +139,9 @@ export const RegexBuilder = () => {
   };
 
   const handleAddToDictionary = () => {
-    if (!category || !regex) {
+    const patternToAdd = manualRegex || regex;
+    
+    if (!category || !patternToAdd) {
       setMessage('Please select a category and provide a regex pattern');
       return;
     }
@@ -152,16 +155,16 @@ export const RegexBuilder = () => {
       if (!updatedDictionary[category][subcategory]) {
         updatedDictionary[category][subcategory] = [];
       }
-      if (!updatedDictionary[category][subcategory].includes(regex)) {
-        updatedDictionary[category][subcategory] = [...updatedDictionary[category][subcategory], regex];
+      if (!updatedDictionary[category][subcategory].includes(patternToAdd)) {
+        updatedDictionary[category][subcategory] = [...updatedDictionary[category][subcategory], patternToAdd];
       }
     } else {
       if (Array.isArray(updatedDictionary[category])) {
-        if (!updatedDictionary[category].includes(regex)) {
-          updatedDictionary[category] = [...updatedDictionary[category], regex];
+        if (!updatedDictionary[category].includes(patternToAdd)) {
+          updatedDictionary[category] = [...updatedDictionary[category], patternToAdd];
         }
       } else {
-        updatedDictionary[category] = [regex];
+        updatedDictionary[category] = [patternToAdd];
       }
     }
 
@@ -242,12 +245,12 @@ export const RegexBuilder = () => {
                 <Label>Category</Label>
                 <div className="flex gap-2">
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="select-trigger">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-                    <SelectContent className="select-content">
+                    <SelectContent>
                       {categories.map(cat => (
-                        <SelectItem key={cat} value={cat} className="hover:bg-muted">{cat}</SelectItem>
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -260,7 +263,7 @@ export const RegexBuilder = () => {
                 <Label>Subcategory</Label>
                 <div className="flex gap-2">
                   <Select value={subcategory} onValueChange={setSubcategory}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select subcategory" />
                     </SelectTrigger>
                     <SelectContent>
@@ -282,18 +285,31 @@ export const RegexBuilder = () => {
               placeholder="happy, joy, excited"
               value={words}
               onChange={(e) => setWords(e.target.value)}
+              className="min-h-[80px]"
             />
           </div>
           
           <Button onClick={generateRegex}>Generate Regex</Button>
           
-          {regex && (
-            <div className="grid gap-2">
-              <Label>Generated Regex</Label>
-              <Input readOnly value={regex} />
-              <Button onClick={handleAddToDictionary}>Add to Dictionary</Button>
-            </div>
-          )}
+          <div className="grid gap-2">
+            <Label>Generated Regex</Label>
+            <Input 
+              value={regex} 
+              readOnly 
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="manualRegex">Or Enter Regex Manually</Label>
+            <Input
+              id="manualRegex"
+              placeholder="Enter regex pattern manually"
+              value={manualRegex}
+              onChange={(e) => setManualRegex(e.target.value)}
+            />
+          </div>
+          
+          <Button onClick={handleAddToDictionary}>Add to Dictionary</Button>
         </CardContent>
       </Card>
 
