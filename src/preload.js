@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('process-transcript', filePath, title, instruction, mode),
   transcribeAudio: (filePath, title, instruction, mode) =>
     ipcRenderer.invoke('transcribe-audio', filePath, title, instruction, mode),
-  // Add regex dictionary functions
+  // Regex dictionary functions
   saveRegexDictionary: (dictionary) => 
     ipcRenderer.invoke('regex:save', dictionary),
   loadRegexDictionary: () => 
