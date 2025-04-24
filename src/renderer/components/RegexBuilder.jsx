@@ -242,10 +242,10 @@ export const RegexBuilder = () => {
                 <Label>Category</Label>
                 <div className="flex gap-2">
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="bg-background border-2 text-foreground font-medium">
+                    <SelectTrigger className="select-trigger">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-                    <SelectContent className="bg-background border-2 text-foreground font-medium shadow-lg">
+                    <SelectContent className="select-content">
                       {categories.map(cat => (
                         <SelectItem key={cat} value={cat} className="hover:bg-muted">{cat}</SelectItem>
                       ))}
