@@ -239,21 +239,21 @@ export const RegexBuilder = () => {
         <CardContent className="grid gap-4">
           <div className="flex gap-4">
             <div className="flex-1">
-              <Label>Category</Label>
-              <div className="flex gap-2">
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map(cat => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button onClick={handleCreateNewCategory} variant="outline"type="button">New</Button>
+                <Label>Category</Label>
+                <div className="flex gap-2">
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger className="bg-background border-2 text-foreground font-medium">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border-2 text-foreground font-medium shadow-lg">
+                      {categories.map(cat => (
+                        <SelectItem key={cat} value={cat} className="hover:bg-muted">{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button onClick={handleCreateNewCategory} variant="outline" type="button">New</Button>
+                </div>
               </div>
-            </div>
 
             {subcategories.length > 0 && (
               <div className="flex-1">
