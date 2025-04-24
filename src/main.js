@@ -7,6 +7,7 @@ const fs = require('fs').promises;
 // Store default directories
 let defaultOpenDirectory = app.getPath("documents");
 let defaultSaveDirectory = app.getPath("documents");
+const regexDictionaryPath = path.join(app.getPath("userData"), "regex_dictionary.json");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -62,6 +63,70 @@ ipcMain.handle('dialog:openFile', async () => {
 
   defaultOpenDirectory = path.dirname(filePaths[0]);
   return filePaths[0];
+});
+
+// Add regex dictionary handlers
+ipcMain.handle('regex:save', async (event, dictionary) => {
+    try {
+      await fs.writeFile(regexDictionaryPath, JSON.stringify(dictionary, null, 2));
+      // Also update process.py with the new dictionary
+      const processFilePath = path.join(__dirname, '..', 'backend', 'process.py');
+      let processContent = await fs.readFile(processFilePath, 'utf8');
+      
+      // Find the regex_tag_patterns dictionary in the file
+      const regexDictStart = processContent.indexOf('regex_tag_patterns = {');
+      const regexDictEnd = processContent.indexOf('# Clean the text', regexDictStart);
+      
+      if (regexDictStart !== -1 && regexDictEnd !== -1) {
+        // Replace the dictionary content while preserving the rest of the file
+        const newContent = processContent.slice(0, regexDictStart) +
+          'regex_tag_patterns = ' + JSON.stringify(dictionary, null, 4) + '\n\n' +
+          processContent.slice(regexDictEnd);
+        
+        await fs.writeFile(processFilePath, newContent, 'utf8');
+        return { success: true, message: 'Regex dictionary saved successfully' };
+      }
+      
+      return { success: false, message: 'Could not locate regex dictionary in process.py' };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+});
+
+ipcMain.handle('regex:load', async () => {
+    try {
+      const data = await fs.readFile(regexDictionaryPath, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      // If the file doesn't exist or there's an error, load from process.py
+      try {
+        const processFilePath = path.join(__dirname, '..', 'backend', 'process.py');
+        const processContent = await fs.readFile(processFilePath, 'utf8');
+        
+        // Extract the regex dictionary from process.py
+        const regexDictStart = processContent.indexOf('regex_tag_patterns = {');
+        const regexDictEnd = processContent.indexOf('# Clean the text', regexDictStart);
+        
+        if (regexDictStart !== -1 && regexDictEnd !== -1) {
+          const dictionaryString = processContent
+            .slice(regexDictStart + 'regex_tag_patterns = '.length, regexDictEnd)
+            .trim();
+          
+          // Convert Python dictionary to JavaScript object
+          const dictionary = eval('(' + dictionaryString.replace(/'/g, '"') + ')');
+          
+          // Save it to the user data directory for future use
+          await fs.writeFile(regexDictionaryPath, JSON.stringify(dictionary, null, 2));
+          
+          return dictionary;
+        }
+        
+        return {};
+      } catch (err) {
+        console.error('Error loading regex dictionary:', err);
+        return {};
+      }
+    }
 });
 
 // Process files IPC endpoints

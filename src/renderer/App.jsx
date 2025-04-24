@@ -1,7 +1,8 @@
 // src/renderer/App.jsx
 import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RegexBuilder } from '@/components/RegexBuilder';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '/components/ui/tabs';
+import { FileProcessingForm } from '/components/FileProcessingForm.jsx';
+import { RegexBuilder } from '/components/RegexBuilder.jsx';
 
 const App = () => {
   const [mode, setMode] = useState('rag');
@@ -13,17 +14,22 @@ const App = () => {
       </header>
 
       <Tabs defaultValue={mode} onValueChange={setMode} className="space-y-6">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="rag">RAG Memory</TabsTrigger>
           <TabsTrigger value="sft">SFT Data</TabsTrigger>
+          <TabsTrigger value="regex">Regex Builder</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rag">
-          {/* RAG memory form will go here */}
+          <FileProcessingForm mode="rag" />
         </TabsContent>
 
         <TabsContent value="sft">
-          {/* SFT data form will go here */}
+          <FileProcessingForm mode="sft" />
+        </TabsContent>
+
+        <TabsContent value="regex">
+          <RegexBuilder />
         </TabsContent>
       </Tabs>
     </div>
